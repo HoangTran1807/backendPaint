@@ -14,6 +14,11 @@ const io = socketIo(server, {
 
 app.use(cors());
 
+app.get('/', (req, res) => {
+    res.send('Server is running');
+});
+
+
 
 setupSocket(io);
 
