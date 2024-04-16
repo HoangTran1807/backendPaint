@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
 // Kết nối tới MongoDB local
-mongoose.connect('mongodb+srv://tranhuuhoang692:Hades2k2@mycluster.bstxaul.mongodb.net/Paint');
+mongoose.connect('mongodb+srv://tranhuuhoang692:Hades2k2@mycluster.bstxaul.mongodb.net/Paint', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    connectTimeoutMS: 30000, // 30 giây
+});
 
 const db = mongoose.connection;
 
