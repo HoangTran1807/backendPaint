@@ -17,6 +17,7 @@ module.exports = function (io, _arrCell, canvasId) {
         });
 
         socket.on('Client_SendCell', (x, y, color) => {
+            console.log('Client_SendCell', x, y, color);
             createCell(x, y, color, canvasId);
             let cell = arrCell.find(cell => cell.x === x && cell.y === y);
             if (cell) {
