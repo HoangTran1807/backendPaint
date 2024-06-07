@@ -10,13 +10,13 @@ module.exports = function (io, _arrCell, _canvasId) {
     canvasId = _canvasId;
 
     io.on('connection', (socket) => {
-        console.log('A client connected');
+        const clientIp = socket.request.connection.remoteAddress;
+        console.log(`A client connected from ${clientIp}`);
         // Send 'initialData' to the new client
         socket.emit('initialData', arrCell);
 
         socket.on('disconnect', () => {
-            const clientIp = socket.request.connection.remoteAddress;
-            console.log(`A client connected from ${clientIp}`);
+            console.log('A client disconnected');
         });
 
         socket.on('Client_SendCell', (x, y, color) => {
