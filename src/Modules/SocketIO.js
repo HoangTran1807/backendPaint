@@ -1,11 +1,13 @@
 const {createCell} = require('../controllers/cell')
 const {closeCanvas} = require('../controllers/canvas');
+const {isAdmin} = require('../controllers/user');
 
 
 
 
-module.exports = function (io, _arrCell, canvasId) {
+module.exports = function (io, _arrCell, _canvasId) {
     let arrCell = _arrCell // Define arrCell here
+    canvasId = _canvasId;
 
     io.on('connection', (socket) => {
         console.log('A client connected');
@@ -13,7 +15,8 @@ module.exports = function (io, _arrCell, canvasId) {
         socket.emit('initialData', arrCell);
 
         socket.on('disconnect', () => {
-            console.log('A client disconnected');
+            const clientIp = socket.request.connection.remoteAddress;
+            console.log(`A client connected from ${clientIp}`);
         });
 
         socket.on('Client_SendCell', (x, y, color) => {
@@ -31,11 +34,25 @@ module.exports = function (io, _arrCell, canvasId) {
         });
 
 
-        socket.on('Client_Send_ClearBoard', () => {
-            arrCell = [];
-            io.emit('Server_Send_ClearBoard');
-            console.log('Clear board');
-            closeCanvas(canvasId);
+        socket.on('Client_Send_ClearBoard', (token) => {
+            // Verify the token and check if the user is an admin
+            jwt.verify(token, SECRET_KEY, (err, decoded) => {
+                if (err) {
+                    console.log('Token verification failed:', err);
+                } else if (isAdmin(decoded._id)) {
+                    // create new canvas after clear
+                    closeCanvas(canvasId);
+                    createCanvas('Canvas', 200).then((res) => {
+                        canvasId = res._id;
+                        arrCell = [];
+                        io.emit('Server_Send_ClearBoard');
+                    });
+                }
+            });
         });
+
+
+
+
     });
 }

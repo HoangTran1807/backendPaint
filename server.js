@@ -28,8 +28,6 @@ getCurrCanvasId().then((res) => {
         arrCell = convertCellsToArr(res);
         setupSocket(io, arrCell, canvasId);
     });
-    
-
 });
 
 
